@@ -1,20 +1,41 @@
-# 拾色引擎 Palette Studio
+<p align="center">
+  <img src="docs/images/logo.png" width="150" alt="拾色引擎">
+</p>
 
-> 腾讯犀鸟鸟开源计划 2026 · TDesign 实战 Task 01
-> 输入任意主色，在 OKLCH 感知均匀色彩空间中生成 10 级、由浅到深、过渡自然的完整主色阶，并输出整套 TDesign Design Token。
+<h1 align="center">拾色引擎 shise-engine</h1>
 
-本仓库即 npm 包 `shise-engine` 本体（可直接作为依赖导入），`demo/` 为调用示例与交互式演示站。
+<p align="center">
+  输入任意主色，在 OKLCH 感知均匀色彩空间中生成 10 级过渡自然的完整色阶，<br>
+  并输出整套 TDesign Design Token —— 一行代码完成全组件换装
+</p>
 
-**在线演示**：https://tdesign-demo.xyun.dev ｜ **Task 02 产品仓库**：[xy200303/shise-dongfang](https://github.com/xy200303/shise-dongfang)（https://shise.xyun.dev ）
+<p align="center">
+  <a href="#作为依赖使用">快速开始</a> ·
+  <a href="#算法设计">算法设计</a> ·
+  <a href="#api-速览">API</a> ·
+  <a href="https://tdesign-demo.xyun.dev">在线演示</a> ·
+  <a href="https://github.com/xy200303/shise-dongfang">Task 02 产品</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/demo.jpg" alt="拾色引擎演示站" width="1080">
+</p>
+
+---
+
+腾讯犀牛鸟开源计划 2026 · TDesign 课题实战阶段 **Task 01** 交付仓库。
+本仓库即 npm 包 `shise-engine` 本体，`demo/` 为调用示例与交互式演示站。
+
+**在线演示**：https://tdesign-demo.xyun.dev ｜ **Task 02 产品仓库**：[xy200303/shise-dongfang](https://github.com/xy200303/shise-dongfang)（https://shise.xyun.dev）
 
 ## 作为依赖使用
 
 构建产物 `dist/` 已随仓库发布，安装即可用，无需任何构建脚本或额外配置：
 
 ```bash
-npm install github:xy200303/shise-engine#v1.0.0
+npm install github:xy200303/shise-engine#v1.2.0
 # 或
-pnpm add github:xy200303/shise-engine#v1.0.0
+pnpm add github:xy200303/shise-engine#v1.2.0
 ```
 
 ```ts
@@ -27,15 +48,14 @@ const theme = generateTheme('#0052d9');
 // theme.tokens        完整 TDesign Design Token（亮/暗两张表）
 ```
 
-## 仓库结构
+## 特性一览
 
-```
-shise-engine/
-├── src/        # 引擎源码（本包 shise-engine）
-├── tests/      # 单元测试（含 Sharma CIEDE2000 标准向量校验）
-├── scripts/    # bench.mjs 性能基准
-└── demo/       # 调用示例：交互式演示站（Vite + React + TDesign React）
-```
+- **10 级主色阶**：OKLCH 感知均匀采样，11 色相分区治理（黄色深处防脏、蓝色可压更深）
+- **暗色模式**：按暗色场景明度区间重新生成，4 级表面体系 + 按色相分桶彩度收敛
+- **中性色阶**：14 级带主题色倾向的高级灰，亮暗两套
+- **对比度双轨**：WCAG 2.x + APCA（WCAG 3 草案）双指标校验，文字反色双轨择优
+- **同色质检**：相邻级 DeltaE2000 < 2 自动拉开，极端输入不塌方
+- **零重型依赖**：仅 `culori` + `apca-w3`，全链路 memoize
 
 ## 快速开始
 
@@ -45,6 +65,17 @@ pnpm build        # 构建引擎 → dist/
 pnpm test         # 运行单元测试（44 例）
 pnpm bench        # 性能基准
 pnpm dev          # 启动演示站（demo/）
+```
+
+## 仓库结构
+
+```
+shise-engine/
+├── src/        # 引擎源码（本包 shise-engine）
+├── tests/      # 单元测试（含 Sharma CIEDE2000 标准向量校验）
+├── scripts/    # bench.mjs 性能基准
+├── demo/       # 调用示例：交互式演示站（Vite + React + TDesign React）
+└── docs/       # README 产品图
 ```
 
 ## 算法设计
